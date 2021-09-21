@@ -1,4 +1,4 @@
-# DNS Challange
+# DNS Challenge
 scripts to facilitate the creation of wildcard SSL certificates with [mod_md](https://github.com/icing/mod_md#mdchallengedns01) .
 
 > Note:  
@@ -89,9 +89,29 @@ ln -s {path to dns-challenge directory}/dns-challenge.sh dns-challenge-{a type o
 ```
 
 1. create symlink named as "dns-challenge-{a type of DNS}" `to dns-challenge.sh`, using under certbot .
+> now that use [Certbot DNS plugins](https://certbot.eff.org/docs/using.html#dns-plugins) better .
 ```bash
 ln -s {path to dns-challenge directory}/certbot-authenticator.sh certbot-authenticator-{a type of DNS}
 ln -s {path to dns-challenge directory}/certbot-cleanup.sh certbot-cleanup-{a type of DNS}
+```
+
+```bash
+# for example, using Cloudflare DNS API .
+dns-challenge/
+├── certbot-authenticator-cloudflare -> /var/lib/httpd/dns-challenge/certbot-authenticator.sh
+├── certbot-authenticator.sh
+├── certbot-cleanup-cloudflare -> /var/lib/httpd/dns-challenge/certbot-cleanup.sh
+├── certbot-cleanup.sh
+├── cloudflare
+│   ├── configurator.sh
+│   ├── setup.sh
+│   └── teardown.sh
+├── .credencials
+│   └── cloudflare
+├── dns-challenge-cloudflare -> /var/lib/httpd/dns-challenge/dns-challenge.sh
+├── dns-challenge.sh
+└── logs
+    └── cloudflare.log
 ```
 
 1. configure apache for mod_md .
