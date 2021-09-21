@@ -1,10 +1,15 @@
 # DNS Challenge
 scripts to facilitate the creation of wildcard SSL certificates with [mod_md](https://github.com/icing/mod_md#mdchallengedns01) .
 
+## TL;DR
+* [x] enable to use "DNS-01" challenge with mod_md .
+* [x] enable to use wildcard into sub domains .
+* [x] enable to auto renew with certbot and systemd timer .
+
 > Note:  
 > this scripts enables only to using with Cloudflare DNS, yet .
 ## Why Cloudflare ?
-he gave me a useful free plan, that's all, that's enough .
+he gave me a useful free plan, that's all, and that's enough .
 
 ## Installation
 1. download them all , and put it somewhere .
