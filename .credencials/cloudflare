@@ -1,0 +1,53 @@
+[cloudflare]
+
+[auth]
+# choose at least one from A and B .
+# use API token access, even if both parameter specified .
+
+# A. API Token ( recommends )
+# an access token of Cloudflare which can edit DNS records .
+cloudflare_dns_api_token=
+
+# B. global access token ( deprecated )
+# means access as the master of the zone .
+cloudflare_auth_email=
+cloudflare_auth_key=
+
+[dns]
+# API endpoint ( optional, default: https://api.cloudflare.com/client/v4/zones ) .
+base_url=
+
+# a prefix of TXT record name ( optional, default: _acme-challenge ) .
+record_prefix=
+
+# DNS zone id ( optional ignore this if DNS zone name specified ) .
+zone_id=
+
+# DNS zone name ( optional ) .
+zone=
+
+# TTL ( seconds ) of TXT recoed ( optional, default: 120 ) .
+# Note: numeric only (60 - 2147483647), or "1" ( means "auto" ) .
+ttl=
+
+# waiting seconds for DNS propagation ( optional, default: 10 ) .
+propagation_seconds=
+
+# DNS record deletion check strictly, if false ( optional, default: 0 ) .
+teardown_lazily=
+
+[development]
+# a toggle for logging ( optional, default: 1 ) .
+logging=
+
+# absolute path to log directory ( must be writable, optional, default: (path to dns-challange.sh directory)/logs ) .
+log_dir=
+
+# name of log file ( optional, default: script name ) .
+log=
+
+# no stdout, if false ( optional, default: 1 ) .
+log_console=
+
+# mute debug log, if false ( optional, default: 1 ) .
+debug=
