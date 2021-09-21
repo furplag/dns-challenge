@@ -89,7 +89,7 @@ ln -s {path to dns-challenge directory}/dns-challenge.sh dns-challenge-{a type o
 ```
 
 1. create symlink named as "dns-challenge-{a type of DNS}" `to dns-challenge.sh`, using under certbot .
-> now that use [Certbot DNS plugins](https://certbot.eff.org/docs/using.html#dns-plugins) better .
+> use [Certbot DNS plugins](https://certbot.eff.org/docs/using.html#dns-plugins) should better, if supported .
 ```bash
 ln -s {path to dns-challenge directory}/certbot-authenticator.sh certbot-authenticator-{a type of DNS}
 ln -s {path to dns-challenge directory}/certbot-cleanup.sh certbot-cleanup-{a type of DNS}
