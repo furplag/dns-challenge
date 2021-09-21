@@ -4,7 +4,7 @@ scripts to facilitate the creation of wildcard SSL certificates with [mod_md](ht
 > Note:  
 > this scripts enables only to using with Cloudflare DNS, yet .
 ## Why Cloudflare ?
-he gave me a free plan, that's all .
+he gave me a useful free plan, that's all, that's enough .
 
 ## Installation
 1. download them all , and put it somewhere .
