@@ -125,11 +125,11 @@ dns-challenge/
 <IfModule ssl_module>
   <IfModule md_module>
     MDCAChallenges dns-01
-	  MDChallengeDns01 {path to dns-challenge directory}/dns-challenge-{a type of DNS}
-	  MDCertificateAgreement accepted
-	  <MDomain any.domain.you.controls>
-		  MDMember *.any.domain.you.controls
-	  </MDomain>
+    MDChallengeDns01 {path to dns-challenge directory}/dns-challenge-{a type of DNS}
+    MDCertificateAgreement accepted
+    <MDomain any.domain.you.controls>
+      MDMember *.any.domain.you.controls
+    </MDomain>
   </IfModule>
 
   <VirtualHost *:443>
