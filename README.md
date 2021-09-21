@@ -144,10 +144,7 @@ when the challenge is complete and no longer necessary, mod_md will run
 `dns-challenge-{a type of DNS} teardown [domain]`.
 
 ## License
-
-This software is in the public domain.  Included librariers are covered under
-their own licenses.  See LICENSE for details.
+[Apache-2.0 License](/LICENSE)
 
 ## Trademark Notice
-
 Cloudflare is a registered trademark of Cloudflare, Inc.
