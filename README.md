@@ -105,9 +105,9 @@ ln -s {path to dns-challenge directory}/certbot-cleanup.sh certbot-cleanup-{a ty
 ```bash
 # for example, using Cloudflare DNS API .
 dns-challenge/
-├── certbot-authenticator-cloudflare -> /var/lib/httpd/dns-challenge/certbot-authenticator.sh
+├── certbot-authenticator-cloudflare -> ./certbot-authenticator.sh
 ├── certbot-authenticator.sh
-├── certbot-cleanup-cloudflare -> /var/lib/httpd/dns-challenge/certbot-cleanup.sh
+├── certbot-cleanup-cloudflare -> ./certbot-cleanup.sh
 ├── certbot-cleanup.sh
 ├── cloudflare
 │   ├── configurator.sh
@@ -115,10 +115,9 @@ dns-challenge/
 │   └── teardown.sh
 ├── .credencials
 │   └── cloudflare
-├── dns-challenge-cloudflare -> /var/lib/httpd/dns-challenge/dns-challenge.sh
+├── dns-challenge-cloudflare -> ./dns-challenge.sh
 ├── dns-challenge.sh
-└── logs
-    └── cloudflare.log
+└── logs/
 ```
 
 1. configure apache for mod_md .
