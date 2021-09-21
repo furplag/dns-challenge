@@ -2,7 +2,7 @@
 scripts to facilitate the creation of wildcard SSL certificates with [mod_md](https://github.com/icing/mod_md#mdchallengedns01) .
 
 > Note:  
-> only supports Cloudflare DNS yet .
+> this scripts enables only to using with Cloudflare DNS, yet .
 
 ## Installation
 1. download them all , and put it somewhere .
