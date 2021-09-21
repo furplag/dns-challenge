@@ -112,7 +112,7 @@ else
   elif [[ -z "$(_request_header)" ]]; then _log ERROR "misconfiguration: \"API authentication parameter\" unspecified"; result=1;
   elif [[ -z "${config[cloudflare_dns_api_token]:-}" ]]; then _log WARN "$(cat <<_EOT_
 
-  “Global API Key” was used for authentication, however this key can access
+  "Global API Key" was used for authentication, however this key can access
   the entire Cloudflare API for all domains in your account,
   meaning it could cause a lot of damage if leaked
 
