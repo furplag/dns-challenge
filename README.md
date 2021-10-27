@@ -28,7 +28,7 @@ dns-challenge/
 └── dns-challenge.sh         ... main executable
 ```
 
-1. setting up .credencials/{a type of DNS} file
+2. setting up .credencials/{a type of DNS} file
 ```bash
 # 0 is true in a toggle .
 [cloudflare]
@@ -90,12 +90,12 @@ debug=
 
 ```
 
-1. create symlink named as "dns-challenge-{a type of DNS}" `to dns-challenge.sh`, using under mod_md .
+3. create symlink named as "dns-challenge-{a type of DNS}" `to dns-challenge.sh`, using under mod_md .
 ```bash
 ln -s {path to dns-challenge directory}/dns-challenge.sh dns-challenge-{a type of DNS}
 ```
 
-1. create symlink named as "dns-challenge-{a type of DNS}" `to dns-challenge.sh`, using under certbot .
+4. create symlink named as "dns-challenge-{a type of DNS}" `to dns-challenge.sh`, using under certbot .
 > use [Certbot DNS plugins](https://certbot.eff.org/docs/using.html#dns-plugins) should better, if supported .
 ```bash
 ln -s {path to dns-challenge directory}/certbot-authenticator.sh certbot-authenticator-{a type of DNS}
@@ -120,7 +120,17 @@ dns-challenge/
 └── logs/
 ```
 
-1. configure apache for mod_md .
+5. certbot command example:
+> `--dry-run`, first .
+```certbot.sh
+certbot certonly --manual --preferred-challenges dns-01 --agree-tos --no-eff-email --keep-until-expiring \
+ --manual-auth-hook {path to dns-challenge directory}/certbot-authenticator-cloudflare \
+ --manual-cleanup-hook {path to dns-challenge directory}/certbot-cleanup-cloudflare \
+ -d {certificate domain} -d {certificate *.domain} \
+ -m {valid e-mail}
+```
+
+6. configure apache for mod_md .
 ```httpd.ssl.conf
 <IfModule ssl_module>
   <IfModule md_module>
