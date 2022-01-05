@@ -3,18 +3,18 @@ set -ue -o pipefail
 export LC_ALL=C
 
 ###
-# dns-challenge/cloudflare/configurator
+# dns-challenge/azure/configurator
 #
-# https://github.com/furplag/dns-challenge/cloudflare
+# https://github.com/furplag/dns-challenge/azure
 # Copyright 2021 furplag
 # Licensed under Apache 2.0 (https://github.com/furplag/dns-challenge/blob/master/LICENSE)
 
 ### variable
 # statics
-if ! declare -p name >/dev/null 2>&1; then declare -r name=cloudflare; fi
+if ! declare -p name >/dev/null 2>&1; then declare -r name=azure; fi
 if ! declare -p basedir >/dev/null 2>&1; then declare -r basedir=/var/lib/httpd/dns-challenge; fi
 if ! declare -p dns_type >/dev/null 2>&1; then declare -r dns_type=$(echo "${name:-}" | sed -e 's/\..*$//' -e 's/^.*\-//'); fi
-if ! declare -p configuration_file >/dev/null 2>&1; then declare -r configuration_file=${basedir}/.credencials/cloudflare; fi
+if ! declare -p configuration_file >/dev/null 2>&1; then declare -r configuration_file=${basedir}/.credencials/azure; fi
 if ! declare -p log_dir >/dev/null 2>&1; then declare -r log_dir=${basedir}/logs; fi
 if ! declare -p log >/dev/null 2>&1; then declare -r log=${log_dir}/${name}.`date +"%Y%m"`.log; fi
 if ! declare -p config >/dev/null 2>&1; then declare -A config=(
@@ -29,12 +29,19 @@ if ! declare -p config >/dev/null 2>&1; then declare -A config=(
   [log_console]=1
   [debug]=1
 
-  [auth_email]=
-  [auth_key]=
-  [zone_id]=
+  [token_endpoint]=https://login.microsoftonline.com/@_tenant_id_@/oauth2/token
+  [resource_endpoint]=https://management.core.windows.net/
+  [grant_type]=client_credentials
+  [tenant_id]=
+  [client_id]=
+  [client_secret]=
+  [subscription_id]=
+  [resource_group]=
+  [api_version]=2018-05-01
+  [private_zone]=1
 
   [access_token]=
-  [base_url]=https://api.cloudflare.com/client/v4/zones
+  [base_url]=https://management.azure.com/subscriptions/@_subscription_id_@/resourceGroups/@_resource_group_@/providers/Microsoft.Network/dnsZones/@_zone_@
   [zone]=
   [record_prefix]=_acme-challenge
   [ttl]=120
@@ -78,17 +85,12 @@ function _log(){
 }
 
 ###
-# _auth_header: add request header to API request with curl
+# _request_header: add request header to API request with curl
 function _request_header(){
   local -r _content_type=application/json
   if [[ -n "${config[access_token]:-}" ]]; then cat <<_EOT_
 -H "Content-Type: ${_content_type}" \
 -H "Authorization: Bearer ${config[access_token]}"
-_EOT_
-  elif [[ -n "${config[cloudflare_auth_key]:-}" ]] && [[ -n "${config[cloudflare_auth_email]:-}" ]]; then cat <<_EOT_
--H "Content-Type: ${_content_type}" \
--H "X-Auth-Key: ${config[cloudflare_auth_key]}" \
--H "X-Auth-Email: ${config[cloudflare_auth_email]}"
 _EOT_
   else echo ''; fi
 }
@@ -110,41 +112,46 @@ else
     if [[ "${config[name]}" =~ certbot ]] && [[ ' log_console ' =~ " ${_key:-} " ]]; then :;
     else config[$(echo ${_key})]="$([ "${_key}" = "log" ] && echo ${config[log_dir]} | sed -e 's/[^\/]$/\0\//')${_value}"; fi
   done
-  if [[ -z "${config[base_url]:-}" ]]; then _log ERROR "misconfiguration: \"API endpoint URL\" unspecified"; result=1;
-  elif [[ -z "$(_request_header)" ]]; then _log ERROR "misconfiguration: \"API authentication parameter\" unspecified"; result=1;
-  elif [[ -z "${config[access_token]:-}" ]]; then _log WARN "$(cat <<_EOT_
 
-  "Global API Key" was used for authentication, however this key can access
-  the entire Cloudflare API for all domains in your account,
-  meaning it could cause a lot of damage if leaked
+  config[token_endpoint]=$(echo "${config[token_endpoint]:-@_undefined_@}" | sed -e "s/@_tenant_id_@/${config[tenant_id]}/g")
+  config[base_url]=$(echo "${config[base_url]:-@_undefined_@}" | sed -e "s/@_subscription_id_@/${config[subscription_id]:-@_undefined_@}/g" -e "s/@_resource_group_@/${config[resource_group]:-@_undefined_@}/g" -e "s/@_zone_@/${config[zone]:-@_undefined_@}/g")
+  if [[ $(("${config[private_zone]:-1}")) -eq 0 ]]; then config[base_url]=$(echo "${config[base_url]:-}" | sed -e 's/\/dnsZones\//\/privateDnsZones\//g'); fi
 
-_EOT_
-  )"
-  fi
-fi
-
-if [[ $(("${result:-1}")) -ne 0 ]]; then :;
-elif [[ -n "${config[zone_id]:-}" ]]; then
-  _response=$(cat <<_EOT_|bash
-curl -s -X GET "${config[base_url]}/${config[zone_id]}" \
-$(_request_header)
-_EOT_
-  )
-  _zone=$(echo ${_response} | python -c "import sys;import json;data=json.load(sys.stdin);print(data['result']['id']) if data['success'] else False;")
-  if [[ ! "${config[zone]}" = "${_zone:-}" ]]; then _log ERROR "invalid DNS zone ID \"${config[zone_id]}\" specified\\n  ${_response}"; result=1; fi
-else
-  _response=$(cat <<_EOT_|bash
-curl -s -X GET "${config[base_url]}?name=${config[zone]}&status=active&per_page=1" \
-$(_request_header)
-_EOT_
-  )
-_log debug ${_response}
-  config[zone_id]=$(echo ${_response} | python -c "import sys;import json;data=json.load(sys.stdin);print(data['result'][0]['id']) if data['success'] and data['result_info']['count'] > 0 else False;")
-  if [[ -z "${config[zone_id]:-}" ]]; then _log ERROR "could not resolv DNS zone ID from domain \"${config[domain]:-}\"\\n  ${_response}"; result=1; fi
+  if [[ "${config[base_url]:-@_undefined_@}" =~ '@_undefined_@' ]]; then _log ERROR "misconfiguration: invalid \"API endpoint URL\""; result=1;
+  elif [[ "${config[token_endpoint]:-@_undefined_@}" =~ '@_undefined_@' ]]; then _log ERROR "misconfiguration: invalid \"API token endpoint URL\""; result=1;
+  elif [[ ! "${config[domain]:-}" =~ "${config[zone]:-@_undefined_@}" ]]; then _log ERROR "misconfiguration: \"DNS zone\" unmatched for the domain\\n  ( domain: \"${config[domain]}\", zone: \"${config[zone]}\" )"; result=1;
+  elif [[ -z "${config[api_version]:-}" ]]; then _log ERROR "misconfiguration: \"API version\" unspecified"; result=1; fi
 fi
 
 if [[ $(("${result:-1}")) -eq 0 ]]; then
-  config[record]="${config[record_prefix]}$([[ -z "${config[record_prefix]:-}" ]] || echo '.')$(echo "${config[domain]}")"
+  # get an access token
+  _response=$(cat <<_EOT_|bash
+curl -s -X POST "${config[token_endpoint]}" \
+ -d "grant_type=${config[grant_type]}" \
+ -d "resource=${config[resource_endpoint]}" \
+ -d "client_id=${config[client_id]}" \
+ -d "client_secret=${config[client_secret]}"
+_EOT_
+  )
+  config[access_token]=$(echo ${_response} | python -c "import sys;import json;data=json.load(sys.stdin);print(data['access_token']) if 'access_token' in data else False;")
+  if [[ -z "${config[access_token]:-}" ]]; then _log ERROR "could not retrieve API access Token\\n  ${_response}"; result=1; fi
+fi
+
+if [[ $(("${result:-1}")) -ne 0 ]]; then :;
+elif [[ -z "$(_request_header)" ]]; then result=1;
+else
+  # DNS zone validation
+  _response=$(cat <<_EOT_|bash
+curl -s -X GET "${config[base_url]}?api-version=${config[api_version]}" \
+$(_request_header)
+_EOT_
+  )
+  config[zone]=$(echo ${_response} | python -c "import sys;import json;data=json.load(sys.stdin);print(data['name']) if 'name' in data else False;")
+  if [[ -z "${config[zone]:-}" ]]; then _log ERROR "could not resolv DNS zone ID from domain \"${config[domain]:-}\"\\n  ${_response}"; result=1; fi
+fi
+
+if [[ $(("${result:-1}")) -eq 0 ]]; then
+  config[record]="${config[record_prefix]}$([[ -z "${config[record_prefix]:-}" ]] || echo '.')$(echo "${config[domain]}" | sed -e "s/\.${config[zone]}$//")"
 fi
 
 _log DEBUG "config\\n$(for k in ${!config[@]}; do echo "  $k=${config[$k]}"; done)"

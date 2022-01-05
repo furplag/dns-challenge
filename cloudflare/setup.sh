@@ -19,7 +19,7 @@ elif [[ ! " ${!config[@]} " =~ ' initialized ' ]]; then _log ERROR "imcomplete c
 else _response=$(cat <<_EOT_|bash
 curl -s -X POST "${config[base_url]}/${config[zone_id]}/dns_records" \
 $(_request_header) \
---data "{\"type\":\"TXT\",\"name\":\"${config[record_prefix]}.${config[domain]}\",\"content\":\"${config[token]}\",\"ttl\":\"${config[ttl]}\"}"
+--data "{\"type\":\"TXT\",\"name\":\"${config[record]}\",\"content\":\"${config[token]}\",\"ttl\":\"${config[ttl]}\"}"
 _EOT_
   )
   _record=$(echo "${_response:-}" | python -c "import sys;import json;data=json.load(sys.stdin);print(data['result']['id']) if data['success'] else False;")
