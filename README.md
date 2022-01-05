@@ -93,7 +93,7 @@ debug=
 ln -s {path to dns-challenge directory}/dns-challenge.sh dns-challenge-{a type of DNS}
 ```
 
-4. create symlink named as "dns-challenge-{a type of DNS}" `to dns-challenge.sh`, using under certbot .
+4. create symlink named as "certbot-{authenticator,cleanup}-{a type of DNS}" `to certbot-{authenticator,cleanup}.sh`, using under certbot .
 > use [Certbot DNS plugins](https://certbot.eff.org/docs/using.html#dns-plugins) should better, if supported .
 ```bash
 ln -s {path to dns-challenge directory}/certbot-authenticator.sh certbot-authenticator-{a type of DNS}
@@ -127,6 +127,7 @@ certbot certonly --manual --preferred-challenges dns-01 --agree-tos --no-eff-ema
  -d {certificate domain} -d {certificate *.domain} \
  -m {valid e-mail}
 ```
+> and check certbot-renew.timer .
 
 6. configure apache for mod_md .
 ```httpd.ssl.conf
