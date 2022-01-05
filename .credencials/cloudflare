@@ -28,7 +28,7 @@ zone=
 
 # TTL ( seconds ) of TXT recoed ( optional, default: 120 ) .
 # Note: numeric only (60 - 2147483647), or "1" ( means "auto" ) .
-ttl=1
+ttl=
 
 # waiting seconds for DNS propagation ( optional, default: 10 ) .
 propagation_seconds=
@@ -38,7 +38,7 @@ teardown_lazily=
 
 [development]
 # a toggle for logging ( optional, default: 1 ) .
-logging=0
+logging=
 
 # absolute path to log directory ( must be writable, optional, default: (path to dns-challange.sh directory)/logs ) .
 log_dir=
@@ -47,7 +47,7 @@ log_dir=
 log=
 
 # no stdout, if false ( optional, default: 1 ) .
-log_console=0
+log_console=
 
 # mute debug log, if false ( optional, default: 1 ) .
-debug=0
+debug=
