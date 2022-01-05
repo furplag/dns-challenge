@@ -7,7 +7,8 @@ scripts to facilitate the creation of wildcard SSL certificates with [mod_md](ht
 * [x] enable to auto renew with certbot and systemd timer .
 
 > Note:  
-> this scripts enables only to using with Cloudflare DNS, yet .
+> this scripts enables only to using with Cloudflare DNS, and Azure DNS yet .
+
 ## Why Cloudflare ?
 he gave me a useful free plan, that's all, and that's enough .
 
@@ -32,19 +33,22 @@ dns-challenge/
 ```bash
 # 0 is true in a toggle .
 [cloudflare]
-
-[auth]
 # choose at least one from A and B .
 # use API token access, even if both parameter specified .
 
 # A. API Token ( recommends )
 # an access token of Cloudflare which can edit DNS records .
-cloudflare_dns_api_token=
-
+#
 # B. global access token ( deprecated )
 # means access as the master of the zone .
-cloudflare_dns_auth_email=
-cloudflare_dns_auth_key=
+auth_email=
+auth_key=
+
+# DNS zone id ( optional ignore this if DNS zone name specified ) .
+zone_id=
+
+[auth]
+access_token=
 
 [dns]
 # API endpoint ( optional, default: https://api.cloudflare.com/client/v4/zones ) .
@@ -53,10 +57,7 @@ base_url=
 # a prefix of TXT record name ( optional, default: _acme-challenge ) .
 record_prefix=
 
-# DNS zone id ( optional ignore this if DNS zone name specified ) .
-zone_id=
-
-# DNS zone name ( optional ) .
+# DNS zone name ( required if the domain is ccTLD or contains second-level, e.g. **.co.**, **.gov.** and etc ) .
 zone=
 
 # TTL ( seconds ) of TXT recoed ( optional, default: 120 ) .
@@ -78,9 +79,6 @@ log_dir=
 
 # name of log file ( optional, default: script name ) .
 log=
-
-# absolute path to log directory ( must be writable, optional, default: (path to dns-challange.sh directory)/logs ) .
-log_dir=
 
 # no stdout, if false ( optional, default: 1 ) .
 log_console=
