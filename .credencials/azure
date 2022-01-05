@@ -1,0 +1,72 @@
+[azure]
+
+
+# API Token
+# an access token of azure subscriptions which can edit DNS records .
+# read the documentation: https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow
+
+# to get an access token for Azure DNS API .
+# read the documentation: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow#get-a-token
+
+# an endpoint to get a token ( optional, default: https://login.microsoftonline.com/@_tenant_id_@/oauth2/token ) .
+token_endpoint=
+# an endpoint of OAuth2 authorization ( optional, default: https://management.core.windows.net/ ) .
+resource_endpoint=
+# patameter
+# grant type ( optional, default: client_credentials ) .
+grant_type=
+# tenant ID .
+tenant_id=
+# client ID .
+client_id=
+# secret .
+client_secret=
+
+# Azure subscription ID .
+subscription_id=
+# Resource group name .
+resource_group=
+# API version ( optional, default: 2018-05-01 ) .
+api_version=
+
+# handles private DNS zone, if true ( optional, default: 1 ) .
+private_zone=
+
+[auth]
+access_token=
+
+[dns]
+# API endpoint ( optional, default: https://management.azure.com/subscriptions ) .
+base_url=
+
+# a prefix of TXT record name ( optional, default: _acme-challenge ) .
+record_prefix=
+
+# DNS zone name ( optional ) .
+zone=
+
+# TTL ( seconds ) of TXT recoed ( optional, default: 120 ) .
+# Note: numeric only (1 - 2147483647) .
+ttl=
+
+# waiting seconds for DNS propagation ( optional, default: 10 ) .
+propagation_seconds=
+
+# DNS record deletion check strictly, if false ( optional, default: 0 ) .
+teardown_lazily=
+
+[development]
+# a toggle for logging ( optional, default: 1 ) .
+logging=
+
+# absolute path to log directory ( must be writable, optional, default: (path to dns-challange.sh directory)/logs ) .
+log_dir=
+
+# name of log file ( optional, default: script name ) .
+log=
+
+# no stdout, if false ( optional, default: 1 ) .
+log_console=
+
+# mute debug log, if false ( optional, default: 1 ) .
+debug=

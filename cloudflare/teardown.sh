@@ -18,7 +18,7 @@ if [[ $(("${result:-1}")) -ne 0 ]]; then _log ERROR "imcomplete configuration";
 elif [[ ! " ${!config[@]} " =~ ' initialized ' ]]; then _log ERROR "imcomplete configuration"; result=1;
 else
   _response=$(cat <<_EOT_|bash
-curl -s -X GET "${config[base_url]}/${config[zone_id]}/dns_records?type=TXT&name=${config[record_prefix]}.${config[domain]}&page=1&per_page=100" \
+curl -s -X GET "${config[base_url]}/${config[zone_id]}/dns_records?type=TXT&name=${config[record]}&page=1&per_page=100" \
 $(_request_header)
 _EOT_
   )
