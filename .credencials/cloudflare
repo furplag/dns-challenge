@@ -1,3 +1,4 @@
+# 0 is true in a toggle .
 [cloudflare]
 # choose at least one from A and B .
 # use API token access, even if both parameter specified .
