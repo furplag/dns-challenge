@@ -1,6 +1,5 @@
+# 0 is true in a toggle .
 [azure]
-
-
 # API Token
 # an access token of azure subscriptions which can edit DNS records .
 # read the documentation: https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow

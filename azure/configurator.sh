@@ -151,7 +151,7 @@ _EOT_
 fi
 
 if [[ $(("${result:-1}")) -eq 0 ]]; then
-  config[record]="${config[record_prefix]}$([[ -z "${config[record_prefix]:-}" ]] || echo '.')$(echo "${config[domain]}" | sed -e "s/\.${config[zone]}$//")"
+  config[record]="${config[record_prefix]}$(if [[ "${config[domain]}" = "${config[zone]}" ]]; then echo ''; else echo "$([[ -z "${config[record_prefix]:-}" ]] || echo '.')$(echo "${config[domain]}" | sed -e "s/\.${config[zone]}$//")"; fi)"
 fi
 
 _log DEBUG "config\\n$(for k in ${!config[@]}; do echo "  $k=${config[$k]}"; done)"
