@@ -3,7 +3,7 @@ set -ue -o pipefail
 export LC_ALL=C
 
 ###
-# dns-challenge/dns-challenge-cloudflare
+# dns-challenge/dns-challenge.sh
 #
 # https://github.com/furplag/dns-challenge
 # Copyright 2021 furplag
