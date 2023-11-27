@@ -14,6 +14,7 @@ export LC_ALL=C
 if ! declare -p name >/dev/null 2>&1; then declare -r name=`basename ${0:-}`; fi
 if ! declare -p basedir >/dev/null 2>&1; then declare -r basedir=$(cd $(dirname $0); pwd); fi
 if ! declare -p dns_type >/dev/null 2>&1; then declare -r dns_type=$(echo "${name:-}" | sed -e 's/\..*$//' -e 's/^.*\-//'); fi
+if ! declare -p _python >/dev/null 2>&1; then declare -r _python=$(if which python >/dev/null 2>&1; then which python; else which python3; fi); fi
 if [[ -z "${dns_type}" ]]; then cat <<_EOT_
 
 no DNS type selected .

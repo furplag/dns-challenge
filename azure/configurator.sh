@@ -53,6 +53,7 @@ if ! declare -p config >/dev/null 2>&1; then declare -A config=(
   [record]=
   [token]=
 ); fi
+if ! declare -p _python >/dev/null 2>&1; then declare -r _python=$(if which python >/dev/null 2>&1; then which python; else which python3; fi); fi
 if ! declare -p result >/dev/null 2>&1; then declare -i result=0; fi
 # arguments
 if [[ -z "${config[execute]:-}" ]]; then config[execute]=$(_execute="${1:-}"; echo "${_execute,,}" | sed -e 's/ \+//g'); fi
@@ -99,7 +100,7 @@ _EOT_
 # read configuration
 if [[ " ${config[@]} " =~ ' initialized ' ]]; then :;
 elif ! curl --version >/dev/null 2>&1; then _log FATAL "enable to command \"curl\" first"; result=1;
-elif ! python --version >/dev/null 2>&1; then _log FATAL "enable to command \"python\" first"; result=1;
+elif ! $_python --version >/dev/null 2>&1; then _log FATAL "enable to command \"python\" first"; result=1;
 elif [[ ! -f "${config[configuration_file]}" ]]; then _log FATAL "configuration_file \"${config[configuration_file]}\" not found"; result=1;
 elif [[ ! " setup teardown " =~ " ${config[execute]:-} " ]]; then _log ERROR "required argument (1): \"setup\" or \"teardown\""; result=1;
 elif [[ -z "${config[domain]:-}" ]]; then _log ERROR "required argument (2): \"domain\""; result=1;
@@ -133,7 +134,7 @@ curl -s -X POST "${config[token_endpoint]}" \
  -d "client_secret=${config[client_secret]}"
 _EOT_
   )
-  config[access_token]=$(echo ${_response} | python -c "import sys;import json;data=json.load(sys.stdin);print(data['access_token']) if 'access_token' in data else False;")
+  config[access_token]=$(echo ${_response} | $_python -c "import sys;import json;data=json.load(sys.stdin);print(data['access_token']) if 'access_token' in data else False;")
   if [[ -z "${config[access_token]:-}" ]]; then _log ERROR "could not retrieve API access Token\\n  ${_response}"; result=1; fi
 fi
 
@@ -146,7 +147,7 @@ curl -s -X GET "${config[base_url]}?api-version=${config[api_version]}" \
 $(_request_header)
 _EOT_
   )
-  config[zone]=$(echo ${_response} | python -c "import sys;import json;data=json.load(sys.stdin);print(data['name']) if 'name' in data else False;")
+  config[zone]=$(echo ${_response} | $_python -c "import sys;import json;data=json.load(sys.stdin);print(data['name']) if 'name' in data else False;")
   if [[ -z "${config[zone]:-}" ]]; then _log ERROR "could not resolv DNS zone ID from domain \"${config[domain]:-}\"\\n  ${_response}"; result=1; fi
 fi
 

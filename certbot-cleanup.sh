@@ -17,7 +17,7 @@ if ! declare -p dns_type >/dev/null 2>&1; then declare -r dns_type=$(echo "${nam
 if [[ -z "${dns_type}" ]]; then exit 1; fi
 if ! declare -p configuration_file >/dev/null 2>&1; then declare -r configuration_file=${basedir}/.credencials/${dns_type}; fi
 
-if ! declare -p CERTBOT_DOMAIN >/dev/null 2>&1; then declare -r CERTBOT_DOMAIN=hey.furplag.jp; fi
+if ! declare -p CERTBOT_DOMAIN >/dev/null 2>&1; then declare -r CERTBOT_DOMAIN=; fi
 
 cat <<_EOT_|bash -s -- teardown "${CERTBOT_DOMAIN}"
 declare -r name=${name}
