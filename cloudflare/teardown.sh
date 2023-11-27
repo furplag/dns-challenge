@@ -11,6 +11,7 @@ export LC_ALL=C
 
 ### variable
 # statics
+if ! declare -p _python >/dev/null 2>&1; then declare -r _python=$(if which python >/dev/null 2>&1; then which python; else which python3; fi); fi
 if ! declare -p result >/dev/null 2>&1; then declare -i result=0; fi
 if ! declare -p config >/dev/null 2>&1; then result=1; fi
 
@@ -23,7 +24,7 @@ $(_request_header)
 _EOT_
   )
   local -ar _records=($(echo "${_response:-}" \
-    | python -c "import sys;import json;data=json.load(sys.stdin);[print(result['id']) for result in data['result']] if data['success'] and data['result_info']['count'] > 0 else False;"
+    | $_python -c "import sys;import json;data=json.load(sys.stdin);[print(result['id']) for result in data['result']] if data['success'] and data['result_info']['count'] > 0 else False;"
   ))
   for _record in "${_records[@]}"; do
     if [[ -n "${_record:-}" ]]; then
