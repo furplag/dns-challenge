@@ -163,3 +163,4 @@ when the challenge is complete and no longer necessary, mod_md will run
 
 ## Trademark Notice
 Cloudflare is a registered trademark of Cloudflare, Inc.
+Azure is a registered trademark of the Microsoft group.
